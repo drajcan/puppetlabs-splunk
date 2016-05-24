@@ -44,9 +44,9 @@
 # Requires: nothing
 #
 class splunk::forwarder (
+  $package_source,
+  $pkg_provider,
   $server            = $splunk::params::server,
-  $package_source    = $splunk::params::forwarder_pkg_src,
-  $package_name      = $splunk::params::forwarder_pkg_name,
   $package_ensure    = $splunk::params::forwarder_pkg_ensure,
   $logging_port      = $splunk::params::logging_port,
   $splunkd_port      = $splunk::params::splunkd_port,
@@ -55,7 +55,6 @@ class splunk::forwarder (
   $splunkd_listen    = '127.0.0.1',
   $purge_inputs      = false,
   $purge_outputs     = false,
-  $pkg_provider      = $splunk::params::pkg_provider,
   $forwarder_confdir = $splunk::params::forwarder_confdir,
   $forwarder_output  = $splunk::params::forwarder_output,
   $forwarder_input   = $splunk::params::forwarder_input,
@@ -67,27 +66,14 @@ class splunk::forwarder (
   $staging_subdir  = $splunk::params::staging_subdir
 
   $path_delimiter  = $splunk::params::path_delimiter
-  #no need for staging the source if we have yum or apt
-  if $pkg_provider != undef and $pkg_provider != 'yum' and  $pkg_provider != 'apt' {
-    include staging
 
-    $staged_package  = staging_parse($package_source)
-    $pkg_path_parts  = [$staging::path, $staging_subdir, $staged_package]
-    $pkg_source      = join($pkg_path_parts, $path_delimiter)
-
-    staging::file { $staged_package:
-      source => $package_source,
-      subdir => $staging_subdir,
-      before => Package[$package_name],
-    }
-  }
-  package { $package_name:
+  package { $package_source:
     ensure          => $package_ensure,
     provider        => $pkg_provider,
-    source          => $pkg_source,
+    source          => $package_source,
     before          => Service[$virtual_service],
     install_options => $install_options,
-    tag             => 'splunk_forwarder',
+    tag             => 'splunk_server',
   }
 
   # Declare addons
