@@ -52,6 +52,7 @@ class splunk::forwarder (
   $splunkd_port      = $splunk::params::splunkd_port,
   $install_options   = $splunk::params::forwarder_install_options,
   $splunk_user       = $splunk::params::splunk_user,
+  $splunk_home       = $splunk::params::splunk_home,
   $splunkd_listen    = '127.0.0.1',
   $purge_inputs      = false,
   $purge_outputs     = false,
@@ -150,17 +151,20 @@ class splunk::forwarder (
   }
 
   file { "/opt/splunkforwarder/etc/system/local/inputs.conf":
-    ensure => present,
-    tag => 'splunk_forwarder'
+    ensure  => present,
+    require => Package[$package_source],
+    tag     => 'splunk_forwarder'
   }
 
   file { "/opt/splunkforwarder/etc/system/local/outputs.conf":
     ensure => present,
+    require => Package[$package_source],
     tag => 'splunk_forwarder'
   }
 
   file { "/opt/splunkforwarder/etc/system/local/web.conf":
     ensure => present,
+    require => Package[$package_source],
     tag => 'splunk_forwarder'
   }
 
