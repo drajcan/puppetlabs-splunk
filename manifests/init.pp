@@ -43,15 +43,21 @@
 # Requires: nothing
 #
 class splunk (
+
   $package_source,
-  $pkg_provider,
-  $package_ensure       = $splunk::params::server_pkg_ensure,
+
+  $package_provider     = $splunk::params::package_provider,
+  $package_ensure       = $splunk::params::server_package_ensure,
+
   $logging_port         = $splunk::params::logging_port,
   $splunkd_port         = $splunk::params::splunkd_port,
+
   $splunk_user          = $splunk::params::splunk_user,
-  $splunk_home          = $splunk::params::splunk_home,
+  $splunk_home          = $splunk::params::server_splunk_home,
+
   $splunkd_listen       = '127.0.0.1',
   $web_port             = '8000',
+
   $purge_authentication = false,
   $purge_authorize      = false,
   $purge_distsearch     = false,
@@ -63,6 +69,7 @@ class splunk (
   $purge_server         = false,
   $purge_transforms     = false,
   $purge_web            = false,
+
 ) inherits splunk::params {
 
   $virtual_service = $splunk::params::server_service
@@ -70,7 +77,7 @@ class splunk (
 
   $path_delimiter  = $splunk::params::path_delimiter
 
-  package { $package_source:
+  package { 'splunk':
     ensure   => $package_ensure,
     provider => $pkg_provider,
     source   => $package_source,
@@ -81,7 +88,7 @@ class splunk (
   exec { 'splunk enable boot-start etcetera':
     command => "${splunk_home}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt",
     path    => ["${splunk_home}/bin", '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
-    require => Package[$package_source],
+    require => Package['splunk'],
     creates => "${splunk_home}/etc/system/local/server.conf",
   }
 
@@ -245,58 +252,69 @@ class splunk (
   }
 
   file { "/opt/splunk/etc/system/local/authentication.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/authorize.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/distsearch.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/indexes.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/inputs.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/limits.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/outputs.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/props.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/server.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/transforms.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/web.conf":
-    ensure => present,
-    tag => 'splunk_server'
+    ensure  => present,
+    require => Exec['splunk'],
+    tag     => 'splunk_server'
   }
 
   # Validate: if both Splunk and Splunk Universal Forwarder are installed on

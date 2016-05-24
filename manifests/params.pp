@@ -232,14 +232,19 @@ class splunk::params (
   $forwarder_src_pkg = "splunkforwarder-${package_suffix}"
   $server_src_pkg    = "splunk-${package_suffix}"
 
-  $server_pkg_ensure = 'installed'
+
   $server_pkg_src    = "${src_root}/${server_src_subdir}/${server_src_pkg}"
   $forwarder_pkg_src = "${src_root}/${forwarder_src_subdir}/${forwarder_src_pkg}"
   $create_password   = true
 
-  $forwarder_pkg_ensure = 'installed'
-  $splunk_user          = 'splunk'
-  $splunk_home          = '/opt/splunk'
+  $server_package_ensure = 'installed'
+  $server_splunk_home    = '/opt/splunk'
+
+  $forwarder_package_ensure  = 'installed'
+  $forwarder_splunk_home     = '/opt/splunkforwarder'
+
+  $splunk_user           = 'splunk'
+  $package_provider      = 'dpkg'
 
   # A meta resource so providers know where splunk is installed:
   splunk_config { 'splunk':

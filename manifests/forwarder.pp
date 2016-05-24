@@ -44,16 +44,24 @@
 # Requires: nothing
 #
 class splunk::forwarder (
+
   $package_source,
-  $pkg_provider,
+
+  $package_provider  = $splunk::params::package_provider,
+  $package_ensure    = $splunk::params::forwarder_package_ensure,
+
   $server            = $splunk::params::server,
-  $package_ensure    = $splunk::params::forwarder_pkg_ensure,
+
   $logging_port      = $splunk::params::logging_port,
   $splunkd_port      = $splunk::params::splunkd_port,
+
   $install_options   = $splunk::params::forwarder_install_options,
+
   $splunk_user       = $splunk::params::splunk_user,
-  $splunk_home       = $splunk::params::splunk_home,
+  $splunk_home       = $splunk::params::forwarder_splunk_home,
+
   $splunkd_listen    = '127.0.0.1',
+
   $purge_inputs      = false,
   $purge_outputs     = false,
   $forwarder_confdir = $splunk::params::forwarder_confdir,
@@ -61,6 +69,7 @@ class splunk::forwarder (
   $forwarder_input   = $splunk::params::forwarder_input,
   $create_password   = $splunk::params::create_password,
   $addons            = {},
+
 ) inherits splunk::params {
 
   $virtual_service = $splunk::params::forwarder_service
@@ -68,7 +77,7 @@ class splunk::forwarder (
 
   $path_delimiter  = $splunk::params::path_delimiter
 
-  package { $package_source:
+  package { 'splunkforwarder':
     ensure          => $package_ensure,
     provider        => $pkg_provider,
     source          => $package_source,
@@ -80,7 +89,7 @@ class splunk::forwarder (
   exec { 'splunk enable boot-start':
     command => "${splunk_home}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt",
     path    => ["${splunk_home}/bin", '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
-    require => Package[$package_source],
+    require => Package['splunkforwarder'],
     creates => "${splunk_home}/etc/system/local/server.conf",
   }
 
@@ -152,19 +161,19 @@ class splunk::forwarder (
 
   file { "/opt/splunkforwarder/etc/system/local/inputs.conf":
     ensure  => present,
-    require => Package[$package_source],
+    require => Exec['splunkforwarder'],
     tag     => 'splunk_forwarder'
   }
 
   file { "/opt/splunkforwarder/etc/system/local/outputs.conf":
     ensure => present,
-    require => Package[$package_source],
+    require => Package['splunkforwarder'],
     tag => 'splunk_forwarder'
   }
 
   file { "/opt/splunkforwarder/etc/system/local/web.conf":
     ensure => present,
-    require => Package[$package_source],
+    require => Package['splunkforwarder'],
     tag => 'splunk_forwarder'
   }
 
