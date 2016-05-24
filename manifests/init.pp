@@ -43,13 +43,12 @@
 # Requires: nothing
 #
 class splunk (
-  $package_source       = $splunk::params::server_pkg_src,
-  $package_name         = $splunk::params::server_pkg_name,
+  $package_source,
+  $pkg_provider,
   $package_ensure       = $splunk::params::server_pkg_ensure,
   $logging_port         = $splunk::params::logging_port,
   $splunkd_port         = $splunk::params::splunkd_port,
   $splunk_user          = $splunk::params::splunk_user,
-  $pkg_provider         = $splunk::params::pkg_provider,
   $splunkd_listen       = '127.0.0.1',
   $web_port             = '8000',
   $purge_authentication = false,
@@ -70,25 +69,10 @@ class splunk (
 
   $path_delimiter  = $splunk::params::path_delimiter
 
-  if $pkg_provider != undef and $pkg_provider != 'yum' and  $pkg_provider != 'apt' {
-    include staging
-
-    $staged_package  = staging_parse($package_source)
-    $pkg_path_parts  = [$staging::path, $staging_subdir, $staged_package]
-    $pkg_source      = join($pkg_path_parts, $path_delimiter)
-
-    #no need for staging the source if we have yum or apt
-    staging::file { $staged_package:
-      source => $package_source,
-      subdir => $staging_subdir,
-      before => Package[$package_name],
-    }
-  }
-
-  package { $package_name:
+  package { $package_source:
     ensure   => $package_ensure,
     provider => $pkg_provider,
-    source   => $pkg_source,
+    source   => $package_source,
     before   => Service[$virtual_service],
     tag      => 'splunk_server',
   }
