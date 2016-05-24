@@ -253,31 +253,31 @@ class splunk (
 
   file { "/opt/splunk/etc/system/local/authentication.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/authorize.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/distsearch.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/indexes.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/inputs.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
@@ -289,31 +289,31 @@ class splunk (
 
   file { "/opt/splunk/etc/system/local/outputs.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/props.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/server.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/transforms.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
   file { "/opt/splunk/etc/system/local/web.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
