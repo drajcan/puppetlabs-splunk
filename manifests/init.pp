@@ -283,7 +283,7 @@ class splunk (
 
   file { "/opt/splunk/etc/system/local/limits.conf":
     ensure  => present,
-    require => Exec['splunk'],
+    require => Package['splunk'],
     tag     => 'splunk_server'
   }
 
