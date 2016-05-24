@@ -161,7 +161,7 @@ class splunk::forwarder (
 
   file { "/opt/splunkforwarder/etc/system/local/inputs.conf":
     ensure  => present,
-    require => Exec['splunkforwarder'],
+    require => Package['splunkforwarder'],
     tag     => 'splunk_forwarder'
   }
 
