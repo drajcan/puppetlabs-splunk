@@ -30,13 +30,13 @@ class splunk::platform::posix (
     user    => $splunk_user,
     creates => '/opt/splunkforwarder/etc/auth/server.pem',
     timeout => 0,
-    require => Package['splunkforwarder'],
+    before  => Service[$splunk::params::forwarder_service],
     tag     => 'splunk_forwarder',
   }
   @exec { 'enable_splunkforwarder':
 
     # The path parameter can't be set because the boot-start silently fails on systemd service providers
-    command => "${splunk::params::forwarder_dir}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt ",
+    command => "${splunk::params::forwarder_dir}/bin/splunk enable boot-start -user ${splunk_user}",
     creates => '/etc/init.d/splunk',
     require => Exec['license_splunkforwarder'],
     tag     => 'splunk_forwarder',
@@ -49,12 +49,12 @@ class splunk::platform::posix (
     user    => $splunk_user,
     creates => '/opt/splunk/etc/auth/splunk.secret',
     timeout => 0,
-    require => Package['splunk'],
+    before  => Service[$splunk::params::server_service],
     tag     => 'splunk_server',
   }
   @exec { 'enable_splunk':
     # The path parameter can't be set because the boot-start silently fails on systemd service providers
-    command => "${splunk::params::server_dir}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt ",
+    command => "${splunk::params::server_dir}/bin/splunk enable boot-start -user ${splunk_user}",
     creates => '/etc/init.d/splunk',
     require => Exec['license_splunk'],
     tag     => 'splunk_server',

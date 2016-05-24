@@ -79,7 +79,7 @@ class splunk (
 
   package { 'splunk':
     ensure   => $package_ensure,
-    provider => $pkg_provider,
+    provider => $package_provider,
     source   => $package_source,
     before   => Service[$virtual_service],
     tag      => 'splunk_server',

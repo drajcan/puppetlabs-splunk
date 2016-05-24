@@ -16,6 +16,8 @@
 class splunk::virtual {
   include splunk::params
 
+  contain splunk::platform::posix
+
   $virtual_services = unique(flatten([
     $splunk::params::server_service,
     $splunk::params::forwarder_service,
