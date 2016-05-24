@@ -85,13 +85,6 @@ class splunk (
     tag      => 'splunk_server',
   }
 
-  exec { 'splunk enable boot-start etcetera':
-    command => "${splunk_home}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt",
-    path    => ["${splunk_home}/bin", '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
-    require => Package['splunk'],
-    creates => "${splunk_home}/etc/system/local/server.conf",
-  }
-
   splunk_input { 'default_host':
     section => 'default',
     setting => 'host',

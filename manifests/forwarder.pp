@@ -86,13 +86,6 @@ class splunk::forwarder (
     tag             => 'splunk_server',
   }
 
-  exec { 'splunk enable boot-start':
-    command => "${splunk_home}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt",
-    path    => ["${splunk_home}/bin", '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
-    require => Package['splunkforwarder'],
-    creates => "${splunk_home}/etc/system/local/server.conf",
-  }
-
   # Declare addons
   create_resources('splunk::addon', $addons)
 
