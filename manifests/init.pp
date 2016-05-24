@@ -49,6 +49,7 @@ class splunk (
   $logging_port         = $splunk::params::logging_port,
   $splunkd_port         = $splunk::params::splunkd_port,
   $splunk_user          = $splunk::params::splunk_user,
+  $splunk_home          = $splunk::params::splunk_home,
   $splunkd_listen       = '127.0.0.1',
   $web_port             = '8000',
   $purge_authentication = false,
@@ -75,6 +76,13 @@ class splunk (
     source   => $package_source,
     before   => Service[$virtual_service],
     tag      => 'splunk_server',
+  }
+
+  exec { 'splunk enable boot-start etcetera':
+    command => "${splunk_home}/bin/splunk enable boot-start -user ${splunk_user} --accept-license --answer-yes --no-prompt",
+    path    => ["${splunk_home}/bin", '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+    require => Package[$package_source],
+    creates => "${splunk_home}/etc/system/local/server.conf",
   }
 
   splunk_input { 'default_host':

@@ -238,7 +238,8 @@ class splunk::params (
   $create_password   = true
 
   $forwarder_pkg_ensure = 'installed'
-  $splunk_user = 'root'
+  $splunk_user          = 'splunk'
+  $splunk_home          = '/opt/splunk'
 
   # A meta resource so providers know where splunk is installed:
   splunk_config { 'splunk':
